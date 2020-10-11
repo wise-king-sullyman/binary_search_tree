@@ -35,20 +35,18 @@ class Tree
   end
 
   def insert(value, node = @root)
-    insert_node = Node.new(value)
-    if value < node.value
-      return insert(value, node.left_child) if node.left_child
+    new_node = Node.new(value)
+    next_node = new_node < node ? node.left_child : node.right_child
+    return insert(value, next_node) if next_node
 
-      node.left_child = insert_node
-    else
-      return insert(value, node.right_child) if node.right_child
-      
-      node.right_child = insert_node
-    end
+    new_node < node ? node.left_child = new_node : node.right_child = new_node
   end
 
-  def find(value, root = @root)
-    node = root
+  def delete(value)
+    node_to_delete = find(value)
+  end
+  
+  def find(value, node = @root)
     return node if node.value == value
 
     if node.left_child
