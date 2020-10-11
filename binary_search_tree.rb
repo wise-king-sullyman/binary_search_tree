@@ -34,23 +34,16 @@ class Tree
     root
   end
 
-  def insert(value, root = @root)
+  def insert(value, node = @root)
     insert_node = Node.new(value)
-    node = root
-    while node
-      if value < node.value && node.left_child
-        node = node.left_child
-        next
-      elsif value < node.value
-        node.left_child = insert_node
-        return
-      elsif node.right_child
-        node = node.right_child
-        next
-      else
-        node.right_child = insert_node
-        return
-      end
+    if value < node.value
+      return insert(value, node.left_child) if node.left_child
+
+      node.left_child = insert_node
+    else
+      return insert(value, node.right_child) if node.right_child
+      
+      node.right_child = insert_node
     end
   end
 
