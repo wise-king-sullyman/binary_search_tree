@@ -20,7 +20,6 @@ end
 class Tree
   attr_accessor :root
   def initialize(array)
-    @array = array
     @root = build_tree(array)
   end
 
@@ -35,6 +34,17 @@ class Tree
     root
   end
 
+  def find(value, root = @root)
+    node = root
+    return node if node.value == value
+
+    if node.left_child
+      find(value, node.left_child)
+    elsif node.right_child
+      find(value, node.right_child)
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -44,3 +54,4 @@ end
 
 tree = Tree.new([1, 2, 3, 4, 5, 6])
 tree.pretty_print
+
