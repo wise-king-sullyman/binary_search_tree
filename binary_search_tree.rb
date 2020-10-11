@@ -34,6 +34,26 @@ class Tree
     root
   end
 
+  def insert(value, root = @root)
+    insert_node = Node.new(value)
+    node = root
+    while node
+      if value < node.value && node.left_child
+        node = node.left_child
+        next
+      elsif value < node.value
+        node.left_child = insert_node
+        return
+      elsif node.right_child
+        node = node.right_child
+        next
+      else
+        node.right_child = insert_node
+        return
+      end
+    end
+  end
+
   def find(value, root = @root)
     node = root
     return node if node.value == value
@@ -52,6 +72,20 @@ class Tree
   end
 end
 
-tree = Tree.new([1, 2, 3, 4, 5, 6])
+tree = Tree.new([5, 10, 15])
+tree.insert(3)
+tree.insert(17)
+tree.insert(1)
+tree.insert(2)
+tree.insert(13)
+tree.insert(16)
+tree.insert(23)
+tree.insert(4)
+tree.insert(11)
+tree.insert(7)
+tree.insert(12)
+tree.insert(20)
+tree.insert(25)
+tree.insert(30)
 tree.pretty_print
 
