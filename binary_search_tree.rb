@@ -15,6 +15,13 @@ class Node
   def <=>(other)
     value <=> other.value
   end
+
+  def child_count
+    child_counter = 0
+    child_counter += 1 if @left_child
+    child_counter += 1 if @right_child
+    child_counter
+  end
 end
 
 # creates and manages the binary search tree
