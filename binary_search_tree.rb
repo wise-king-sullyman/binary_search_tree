@@ -3,10 +3,11 @@
 # responsible for creating and comparing node instances
 class Node
   include Comparable
-  attr_accessor :value, :left_child, :right_child
+  attr_accessor :value, :parent, :left_child, :right_child
 
-  def initialize(value = nil, left_child = nil, right_child = nil)
+  def initialize(value = nil, parent = nil, left_child = nil, right_child = nil)
     @value = value
+    @parent = parent
     @left_child = left_child
     @right_child = right_child
   end
@@ -23,19 +24,19 @@ class Tree
     @root = build_tree(array)
   end
 
-  def build_tree(array, start_index = 0, end_index = array.size - 1)
+  def build_tree(array, start_index = 0, end_index = array.size - 1, parent = nil)
     return if start_index > end_index
 
     middle_index = ((start_index + end_index) / 2).floor
-    root = Node.new(array[middle_index])
-    root.left_child = build_tree(array, start_index, middle_index - 1)
-    root.right_child = build_tree(array, middle_index + 1, end_index)
+    root = Node.new(array[middle_index], parent)
+    root.left_child = build_tree(array, start_index, middle_index - 1, root)
+    root.right_child = build_tree(array, middle_index + 1, end_index, root)
 
     root
   end
 
   def insert(value, node = @root)
-    new_node = Node.new(value)
+    new_node = Node.new(value, node)
     next_node = new_node < node ? node.left_child : node.right_child
     return insert(value, next_node) if next_node
 
@@ -54,7 +55,7 @@ class Tree
     elsif node.right_child && value > node.value
       find(value, node.right_child)
     else
-      puts "Value not in tree"
+      puts 'Value not in tree'
     end
   end
 
@@ -81,4 +82,3 @@ tree.insert(20)
 tree.insert(25)
 tree.insert(30)
 tree.pretty_print
-puts tree.find(17).value
