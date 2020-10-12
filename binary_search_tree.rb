@@ -49,10 +49,12 @@ class Tree
   def find(value, node = @root)
     return node if node.value == value
 
-    if node.left_child
+    if node.left_child && value < node.value
       find(value, node.left_child)
-    elsif node.right_child
+    elsif node.right_child && value > node.value
       find(value, node.right_child)
+    else
+      puts "Value not in tree"
     end
   end
 
@@ -79,4 +81,4 @@ tree.insert(20)
 tree.insert(25)
 tree.insert(30)
 tree.pretty_print
-
+puts tree.find(17).value
