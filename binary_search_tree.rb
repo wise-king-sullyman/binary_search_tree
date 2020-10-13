@@ -51,9 +51,29 @@ class Tree
   end
 
   def delete(value)
-    node_to_delete = find(value)
+    node = find(value)
+    delete_one_child_or_less(node) if node.child_count < 2
+    delete_two_children(node) if node.child_count == 2
   end
-  
+
+  def delete_one_child_or_less(node)
+    parent = node.parent
+    child_is = node.left_child || node.right_child || nil
+    node < parent ? parent.left_child = child_is : parent.right_child = child_is
+  end
+
+  def delete_two_children(node)
+    replacement = find_lowest_child(node.right_child)
+    delete(replacement.value)
+    node.value = replacement.value
+  end
+
+  def find_lowest_child(node)
+    return node unless node.left_child
+
+    find_lowest_child(node.left_child)
+  end
+
   def find(value, node = @root)
     return node if node.value == value
 
@@ -88,4 +108,6 @@ tree.insert(12)
 tree.insert(20)
 tree.insert(25)
 tree.insert(30)
+tree.pretty_print
+tree.delete(25)
 tree.pretty_print
