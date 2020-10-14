@@ -102,6 +102,26 @@ class Tree
     values
   end
 
+  def inorder(node = @root, values = [])
+    inorder(node.left_child, values) if node.left_child
+    values.push(node.value)
+    inorder(node.right_child, values) if node.right_child
+    values
+  end
+
+  def preorder(node = @root, values = [])
+    values.push(node.value)
+    preorder(node.left_child, values) if node.left_child
+    preorder(node.right_child, values) if node.right_child
+    values
+  end
+
+  def postorder(node = @root, values = [])
+    postorder(node.left_child, values) if node.left_child
+    postorder(node.right_child, values) if node.right_child
+    values.push(node.value)
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -129,4 +149,7 @@ tree.delete(25)
 tree.delete(17)
 tree.delete(2)
 tree.pretty_print
-p tree.level_order
+puts "Level order traversal result: #{tree.level_order}"
+puts "Inorder traversal result: #{tree.inorder}"
+puts "Preorder traversal result: #{tree.preorder}"
+puts "Postorder traversal result: #{tree.postorder}"
