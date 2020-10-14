@@ -52,20 +52,28 @@ class Tree
 
   def delete(value)
     node = find(value)
-    delete_one_child_or_less(node) if node.child_count < 2
+    delete_no_children(node) if node.child_count.zero?
+    delete_one_child(node) if node.child_count == 1
     delete_two_children(node) if node.child_count == 2
   end
 
-  def delete_one_child_or_less(node)
+  def delete_no_children(node)
     parent = node.parent
-    child_is = node.left_child || node.right_child || nil
-    node < parent ? parent.left_child = child_is : parent.right_child = child_is
+    node < parent ? parent.left_child = nil : parent.right_child = nil
+  end
+
+  def delete_one_child(node)
+    child = node.left_child || node.right_child
+    delete(child.value)
+    node.value = child.value
   end
 
   def delete_two_children(node)
     replacement = find_lowest_child(node.right_child)
     delete(replacement.value)
     node.value = replacement.value
+    node.left_child.parent = replacement
+    node.right_child.parent = replacement
   end
 
   def find_lowest_child(node)
@@ -84,6 +92,14 @@ class Tree
     else
       puts 'Value not in tree'
     end
+  end
+
+  def level_order(node = @root, values = [], queue = [])
+    values.push(node.value)
+    queue.push(node.left_child) if node.left_child
+    queue.push(node.right_child) if node.right_child
+    level_order(queue.shift, values, queue) unless queue.empty?
+    values
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -110,4 +126,7 @@ tree.insert(25)
 tree.insert(30)
 tree.pretty_print
 tree.delete(25)
+tree.delete(17)
+tree.delete(2)
 tree.pretty_print
+p tree.level_order
