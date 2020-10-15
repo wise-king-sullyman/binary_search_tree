@@ -120,9 +120,24 @@ class Tree
     values.push(node.value)
   end
 
-  def depth(node)
+  def height(node)
+    level_order_tree = level_order
+    level_order_tree.reverse.each do |value|
+      return depth(find(value), node) if descendant_of?(find(value), node)
+    end
+  end
+
+  def descendant_of?(node, super_parent)
+    return true if node == super_parent
+
+    descendant_of?(node.parent, super_parent) if node.parent
+  end
+
+  def depth(node, root = @root)
     depth_counter = 0
     while node.parent
+      break if node == root
+
       depth_counter += 1
       node = node.parent
     end
@@ -161,3 +176,4 @@ puts "Inorder traversal result: #{tree.inorder}"
 puts "Preorder traversal result: #{tree.preorder}"
 puts "Postorder traversal result: #{tree.postorder}"
 puts tree.depth(tree.find(30))
+puts tree.height(tree.find(10))
