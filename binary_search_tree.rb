@@ -144,6 +144,16 @@ class Tree
     depth_counter
   end
 
+  def balanced?
+    level_order.each do |value|
+      node = find(value)
+      left_sub = node.left_child ? height(node.left_child) : 0
+      right_sub = node.right_child ? height(node.right_child) : 0
+      return false if (left_sub - right_sub).abs > 1
+    end
+    true
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -177,3 +187,6 @@ puts "Preorder traversal result: #{tree.preorder}"
 puts "Postorder traversal result: #{tree.postorder}"
 puts tree.depth(tree.find(30))
 puts tree.height(tree.find(10))
+puts tree.balanced?
+tree.insert(40)
+puts tree.balanced?
