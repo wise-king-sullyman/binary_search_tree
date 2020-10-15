@@ -72,8 +72,6 @@ class Tree
     replacement = find_lowest_child(node.right_child)
     delete(replacement.value)
     node.value = replacement.value
-    node.left_child.parent = replacement
-    node.right_child.parent = replacement
   end
 
   def find_lowest_child(node)
@@ -122,6 +120,15 @@ class Tree
     values.push(node.value)
   end
 
+  def depth(node)
+    depth_counter = 0
+    while node.parent
+      depth_counter += 1
+      node = node.parent
+    end
+    depth_counter
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -153,3 +160,4 @@ puts "Level order traversal result: #{tree.level_order}"
 puts "Inorder traversal result: #{tree.inorder}"
 puts "Preorder traversal result: #{tree.preorder}"
 puts "Postorder traversal result: #{tree.postorder}"
+puts tree.depth(tree.find(30))
