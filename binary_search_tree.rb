@@ -31,18 +31,20 @@ class Tree
     @root = build_tree(array)
   end
 
-  def build_tree(array, start_index = 0, end_index = array.size - 1, parent = nil)
+  def build_tree(array, start_index = 0, end_index = array.uniq.size - 1, parent = nil)
     return if start_index > end_index
 
-    sorted_array = array.sort
+    clean_array = array.uniq.sort
     middle_index = ((start_index + end_index) / 2).floor
-    root = Node.new(sorted_array[middle_index], parent)
-    root.left_child = build_tree(sorted_array, start_index, middle_index - 1, root)
-    root.right_child = build_tree(sorted_array, middle_index + 1, end_index, root)
+    root = Node.new(clean_array[middle_index], parent)
+    root.left_child = build_tree(clean_array, start_index, middle_index - 1, root)
+    root.right_child = build_tree(clean_array, middle_index + 1, end_index, root)
     root
   end
 
   def insert(value, node = @root)
+    return if level_order.include?(value)
+
     new_node = Node.new(value, node)
     next_node = new_node < node ? node.left_child : node.right_child
     return insert(value, next_node) if next_node
@@ -88,7 +90,7 @@ class Tree
     elsif node.right_child && value > node.value
       find(value, node.right_child)
     else
-      puts 'Value not in tree'
+      puts "#{value} not in tree"
     end
   end
 
@@ -165,39 +167,24 @@ class Tree
   end
 end
 
-tree = Tree.new([5, 10, 15])
-tree.insert(3)
-tree.insert(17)
-tree.insert(1)
-tree.insert(2)
-tree.insert(13)
-tree.insert(16)
-tree.insert(23)
-tree.insert(4)
-tree.insert(11)
-tree.insert(7)
-tree.insert(12)
-tree.insert(20)
-tree.insert(25)
-tree.insert(30)
-tree.pretty_print
-tree.delete(25)
-tree.delete(17)
-tree.delete(2)
+#array = Array.new(15) { rand(1..100) }
+#p array
+tree = Tree.new([65, 27, 27, 15, 70, 86, 60, 21, 96, 84, 59, 37, 89, 68, 14])
+puts "Tree balanced? #{tree.balanced?}"
 tree.pretty_print
 puts "Level order traversal result: #{tree.level_order}"
 puts "Inorder traversal result: #{tree.inorder}"
 puts "Preorder traversal result: #{tree.preorder}"
 puts "Postorder traversal result: #{tree.postorder}"
-puts tree.depth(tree.find(30))
-puts tree.height(tree.find(10))
-puts tree.balanced?
-tree.insert(40)
-puts tree.balanced?
+tree.insert(105)
+tree.insert(404)
+tree.insert(200)
+tree.insert(1234)
+puts "Tree balanced? #{tree.balanced?}"
 tree.rebalance
+puts "Tree balanced? #{tree.balanced?}"
 tree.pretty_print
 puts "Level order traversal result: #{tree.level_order}"
 puts "Inorder traversal result: #{tree.inorder}"
 puts "Preorder traversal result: #{tree.preorder}"
 puts "Postorder traversal result: #{tree.postorder}"
-puts tree.balanced?
