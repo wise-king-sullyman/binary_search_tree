@@ -167,9 +167,7 @@ class Tree
   end
 end
 
-#array = Array.new(15) { rand(1..100) }
-#p array
-tree = Tree.new([65, 27, 27, 15, 70, 86, 60, 21, 96, 84, 59, 37, 89, 68, 14])
+tree = Tree.new(Array.new(15) { rand(1..100) })
 puts "Tree balanced? #{tree.balanced?}"
 tree.pretty_print
 puts "Level order traversal result: #{tree.level_order}"
