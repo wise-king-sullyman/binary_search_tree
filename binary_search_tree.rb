@@ -31,17 +31,6 @@ class Tree
     @root = build_tree(array)
   end
 
-  def build_tree(array, start_index = 0, end_index = array.uniq.size - 1, parent = nil)
-    return if start_index > end_index
-
-    clean_array = array.uniq.sort
-    middle_index = ((start_index + end_index) / 2).floor
-    root = Node.new(clean_array[middle_index], parent)
-    root.left_child = build_tree(clean_array, start_index, middle_index - 1, root)
-    root.right_child = build_tree(clean_array, middle_index + 1, end_index, root)
-    root
-  end
-
   def insert(value, node = @root)
     return if level_order.include?(value)
 
@@ -57,29 +46,6 @@ class Tree
     delete_no_children(node) if node.child_count.zero?
     delete_one_child(node) if node.child_count == 1
     delete_two_children(node) if node.child_count == 2
-  end
-
-  def delete_no_children(node)
-    parent = node.parent
-    node < parent ? parent.left_child = nil : parent.right_child = nil
-  end
-
-  def delete_one_child(node)
-    child = node.left_child || node.right_child
-    delete(child.value)
-    node.value = child.value
-  end
-
-  def delete_two_children(node)
-    replacement = find_lowest_child(node.right_child)
-    delete(replacement.value)
-    node.value = replacement.value
-  end
-
-  def find_lowest_child(node)
-    return node unless node.left_child
-
-    find_lowest_child(node.left_child)
   end
 
   def find(value, node = @root)
@@ -129,12 +95,6 @@ class Tree
     end
   end
 
-  def descendant_of?(node, super_parent)
-    return true if node == super_parent
-
-    descendant_of?(node.parent, super_parent) if node.parent
-  end
-
   def depth(node, root = @root)
     depth_counter = 0
     while node.parent
@@ -164,6 +124,48 @@ class Tree
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
     pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
+  end
+
+  private
+
+  def build_tree(array, start_index = 0, end_index = array.uniq.size - 1, parent = nil)
+    return if start_index > end_index
+
+    clean_array = array.uniq.sort
+    middle_index = ((start_index + end_index) / 2).floor
+    root = Node.new(clean_array[middle_index], parent)
+    root.left_child = build_tree(clean_array, start_index, middle_index - 1, root)
+    root.right_child = build_tree(clean_array, middle_index + 1, end_index, root)
+    root
+  end
+
+  def delete_no_children(node)
+    parent = node.parent
+    node < parent ? parent.left_child = nil : parent.right_child = nil
+  end
+
+  def delete_one_child(node)
+    child = node.left_child || node.right_child
+    delete(child.value)
+    node.value = child.value
+  end
+
+  def delete_two_children(node)
+    replacement = find_lowest_child(node.right_child)
+    delete(replacement.value)
+    node.value = replacement.value
+  end
+
+  def find_lowest_child(node)
+    return node unless node.left_child
+
+    find_lowest_child(node.left_child)
+  end
+
+  def descendant_of?(node, super_parent)
+    return true if node == super_parent
+
+    descendant_of?(node.parent, super_parent) if node.parent
   end
 end
 
