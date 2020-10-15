@@ -34,11 +34,11 @@ class Tree
   def build_tree(array, start_index = 0, end_index = array.size - 1, parent = nil)
     return if start_index > end_index
 
+    sorted_array = array.sort
     middle_index = ((start_index + end_index) / 2).floor
-    root = Node.new(array[middle_index], parent)
-    root.left_child = build_tree(array, start_index, middle_index - 1, root)
-    root.right_child = build_tree(array, middle_index + 1, end_index, root)
-
+    root = Node.new(sorted_array[middle_index], parent)
+    root.left_child = build_tree(sorted_array, start_index, middle_index - 1, root)
+    root.right_child = build_tree(sorted_array, middle_index + 1, end_index, root)
     root
   end
 
@@ -154,6 +154,10 @@ class Tree
     true
   end
 
+  def rebalance
+    @root = build_tree(level_order)
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -189,4 +193,11 @@ puts tree.depth(tree.find(30))
 puts tree.height(tree.find(10))
 puts tree.balanced?
 tree.insert(40)
+puts tree.balanced?
+tree.rebalance
+tree.pretty_print
+puts "Level order traversal result: #{tree.level_order}"
+puts "Inorder traversal result: #{tree.inorder}"
+puts "Preorder traversal result: #{tree.preorder}"
+puts "Postorder traversal result: #{tree.postorder}"
 puts tree.balanced?
